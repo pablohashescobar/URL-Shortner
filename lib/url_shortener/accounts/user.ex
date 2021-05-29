@@ -2,10 +2,13 @@ defmodule UrlShortener.Accounts.User do
   use Ecto.Schema
   import Ecto.Changeset
 
+  alias UrlShortener.Directory.Link
+
   schema "users" do
     field :email, :string
     field :encrypted_password, :string
     field :password, :string, virtual: true
+    has_many :links, Link
 
     timestamps()
   end
