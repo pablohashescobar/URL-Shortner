@@ -11,8 +11,9 @@ defmodule UrlShortenerWeb.Router do
 
   scope "/api", UrlShortenerWeb do
     pipe_through :api
-    post "/users/signup", UserController, :create
-    post "/users/signin", UserController, :signin
+    post "/users/signup/", UserController, :create
+    post "/users/signin/", UserController, :signin
+    post "/links/", LinkController, :create
   end
 
 

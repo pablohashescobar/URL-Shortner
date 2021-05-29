@@ -65,4 +65,63 @@ defmodule UrlShortener.DirectoryTest do
       assert %Ecto.Changeset{} = Directory.change_link(link)
     end
   end
+
+  describe "clicks" do
+    alias UrlShortener.Directory.Click
+
+    @valid_attrs %{browser_information: "some browser_information"}
+    @update_attrs %{browser_information: "some updated browser_information"}
+    @invalid_attrs %{browser_information: nil}
+
+    def click_fixture(attrs \\ %{}) do
+      {:ok, click} =
+        attrs
+        |> Enum.into(@valid_attrs)
+        |> Directory.create_click()
+
+      click
+    end
+
+    test "list_clicks/0 returns all clicks" do
+      click = click_fixture()
+      assert Directory.list_clicks() == [click]
+    end
+
+    test "get_click!/1 returns the click with given id" do
+      click = click_fixture()
+      assert Directory.get_click!(click.id) == click
+    end
+
+    test "create_click/1 with valid data creates a click" do
+      assert {:ok, %Click{} = click} = Directory.create_click(@valid_attrs)
+      assert click.browser_information == "some browser_information"
+    end
+
+    test "create_click/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Directory.create_click(@invalid_attrs)
+    end
+
+    test "update_click/2 with valid data updates the click" do
+      click = click_fixture()
+      assert {:ok, %Click{} = click} = Directory.update_click(click, @update_attrs)
+      assert click.browser_information == "some updated browser_information"
+    end
+
+    test "update_click/2 with invalid data returns error changeset" do
+      click = click_fixture()
+      assert {:error, %Ecto.Changeset{}} = Directory.update_click(click, @invalid_attrs)
+      assert click == Directory.get_click!(click.id)
+    end
+
+    test "delete_click/1 deletes the click" do
+      click = click_fixture()
+      assert {:ok, %Click{}} = Directory.delete_click(click)
+      assert_raise Ecto.NoResultsError, fn -> Directory.get_click!(click.id) end
+    end
+
+    test "change_click/1 returns a click changeset" do
+      click = click_fixture()
+      assert %Ecto.Changeset{} = Directory.change_click(click)
+    end
+  end
 end
