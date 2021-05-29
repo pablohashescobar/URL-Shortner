@@ -21,6 +21,14 @@ defmodule UrlShortenerWeb.UserController do
     end
   end
 
+  def signin(conn, %{"email" => email, "password" => password}) do
+    with {:ok, user, token} <- Guardian.authenticate(email, password) do
+      conn
+      |> put_status(:created)
+      |> render("user.json", %{user: user, token: token})
+    end
+  end
+
   # def show(conn, %{"id" => id}) do
   #   user = Accounts.get_user!(id)
   #   render(conn, "show.json", user: user)
