@@ -5,11 +5,16 @@ defmodule UrlShortenerWeb.Router do
     plug :accepts, ["json"]
   end
 
+  pipeline :auth do
+    plug UrlShortenerWeb.Auth.Pipeline
+  end
+
   scope "/api", UrlShortenerWeb do
     pipe_through :api
     post "/users/signup", UserController, :create
     post "/users/signin", UserController, :signin
   end
+
 
   # Enables LiveDashboard only for development
   #
