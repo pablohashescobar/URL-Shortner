@@ -9,6 +9,7 @@ defmodule UrlShortener.Directory.Link do
     field :description, :string
     field :original_link, :string
     field :short_link, :string
+    field :hash_id, :string
     belongs_to :user, User
     has_many :clicks, Click
 
@@ -18,7 +19,7 @@ defmodule UrlShortener.Directory.Link do
   @doc false
   def changeset(link, attrs) do
     link
-    |> cast(attrs, [:original_link, :description, :short_link])
+    |> cast(attrs, [:original_link, :description, :short_link, :hash_id])
     |> cast_assoc(:clicks)
     |> validate_required([:original_link, :description])
   end

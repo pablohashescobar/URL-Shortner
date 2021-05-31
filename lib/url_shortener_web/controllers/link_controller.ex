@@ -23,9 +23,10 @@ defmodule UrlShortenerWeb.LinkController do
   end
 
   defp create_link(link_params) do
-    short_url = random_string(8)
-    short_link = "http://localhost:4000/"<>short_url
-    params = Map.put(link_params, "short_link", short_link)
+    hash_id = random_string(8)
+    short_link = "http://localhost:4000/"<>hash_id
+    with_hash = Map.put(link_params, "short_link", short_link)
+    params = Map.put(with_hash, "hash_id", hash_id)
     try do
       case Directory.create_link(params) do
         {:ok, link} ->
