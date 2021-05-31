@@ -18,6 +18,8 @@ defmodule UrlShortenerWeb.Router do
 
     post "/link/:link_id/click", ClickController, :create
     get "/click/:id/", ClickController, :show
+    put "/link/:id/", LinkController, :update
+    delete "/link/:id/", LinkController, :delete
   end
 
 
