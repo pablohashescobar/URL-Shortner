@@ -11,12 +11,11 @@ defmodule UrlShortenerWeb.ClickController do
     render(conn, "index.json", clicks: clicks)
   end
 
-  def create(conn, %{"click" => click_params}) do
-    with {:ok, %Click{} = click} <- Directory.create_click(click_params) do
+  def create(conn, %{"link_id" => link_id, "click" => click_params}) do
+    link = Directory.get_link!(link_id)
+    with {:ok, %Click{} = click} <- Directory.create_click(link, click_params) do
       conn
-      |> put_status(:created)
-      |> put_resp_header("location", Routes.click_path(conn, :show, click))
-      |> render("show.json", click: click)
+      |> redirect(to: Routes.click_path(conn, :show, click))
     end
   end
 

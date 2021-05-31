@@ -12,10 +12,6 @@ defmodule UrlShortenerWeb.LinkController do
   end
 
   def create(conn, %{"link" => link_params}) do
-    # case create_link(link_params) do
-    #   {:ok, link}
-    #     IO.puts("Done")
-    # end
     case create_link(link_params) do
       {:ok, link} ->
         conn
@@ -54,6 +50,11 @@ defmodule UrlShortenerWeb.LinkController do
   def show(conn, %{"id" => id}) do
     link = Directory.get_link!(id)
     render(conn, "show.json", link: link)
+  end
+
+  def show_link_with_clicks(conn, %{"link_id" => link_id, "click" => click}) do
+    IO.inspect(link_id)
+    IO.inspect(click)
   end
 
   def update(conn, %{"id" => id, "link" => link_params}) do

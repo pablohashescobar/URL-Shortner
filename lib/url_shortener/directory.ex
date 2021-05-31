@@ -35,7 +35,11 @@ defmodule UrlShortener.Directory do
       ** (Ecto.NoResultsError)
 
   """
-  def get_link!(id), do: Repo.get!(Link, id)
+  def get_link!(id) do
+    Link
+    |> Repo.get!(id)
+    |> Repo.preload(:clicks)
+  end
 
   @doc """
   Creates a link.
@@ -53,6 +57,10 @@ defmodule UrlShortener.Directory do
     %Link{}
     |> Link.changeset(attrs)
     |> Repo.insert()
+    |> case do
+      {:ok, %Link{} = link} -> {:ok, Repo.preload(link, :clicks)}
+      error -> error
+    end
   end
 
   @doc """
@@ -145,8 +153,9 @@ defmodule UrlShortener.Directory do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_click(attrs \\ %{}) do
-    %Click{}
+  def create_click(%Link{} = link, attrs \\ %{}) do
+    link
+    |> Ecto.build_assoc(:clicks)
     |> Click.changeset(attrs)
     |> Repo.insert()
   end

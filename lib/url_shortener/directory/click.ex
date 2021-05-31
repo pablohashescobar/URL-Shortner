@@ -16,5 +16,6 @@ defmodule UrlShortener.Directory.Click do
     click
     |> cast(attrs, [:browser_information])
     |> validate_required([:browser_information])
+    |> assoc_constraint(:link)
   end
 end

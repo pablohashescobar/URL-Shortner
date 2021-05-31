@@ -19,6 +19,7 @@ defmodule UrlShortener.Directory.Link do
   def changeset(link, attrs) do
     link
     |> cast(attrs, [:original_link, :description, :short_link])
+    |> cast_assoc(:clicks)
     |> validate_required([:original_link, :description])
   end
 end
