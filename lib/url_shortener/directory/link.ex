@@ -12,13 +12,13 @@ defmodule UrlShortener.Directory.Link do
     belongs_to :user, User
     has_many :clicks, Click
 
-    timestamps()
+    timestamps(inserted_at: :created_at)
   end
 
   @doc false
   def changeset(link, attrs) do
     link
-    |> cast(attrs, [:original_link, :description])
+    |> cast(attrs, [:original_link, :description, :short_link])
     |> validate_required([:original_link, :description])
   end
 end

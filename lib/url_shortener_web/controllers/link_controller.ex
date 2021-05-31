@@ -12,12 +12,43 @@ defmodule UrlShortenerWeb.LinkController do
   end
 
   def create(conn, %{"link" => link_params}) do
-    with {:ok, %Link{} = link} <- Directory.create_link(link_params) do
-      conn
-      |> put_status(:created)
-      |> put_resp_header("location", Routes.link_path(conn, :show, link))
-      |> render("show.json", link: link)
+    # case create_link(link_params) do
+    #   {:ok, link}
+    #     IO.puts("Done")
+    # end
+    case create_link(link_params) do
+      {:ok, link} ->
+        conn
+        |> redirect(to: Routes.link_path(conn, :show, link))
+
+      {:error, changeset} ->
+        render(conn, "new.html", changeset: changeset)
     end
+  end
+
+  defp create_link(link_params) do
+    short_url = random_string(8)
+    short_link = "http://localhost:4000/"<>short_url
+    params = Map.put(link_params, "short_link", short_link)
+    try do
+      case Directory.create_link(params) do
+        {:ok, link} ->
+          {:ok, link}
+
+        {:error, %Ecto.Changeset{} = changeset} ->
+          {:error, changeset}
+      end
+    rescue
+      Ecto.ConstraintError ->
+        create_link(params)
+    end
+
+  end
+
+  defp random_string(string_length) do
+    :crypto.strong_rand_bytes(string_length)
+    |>Base.url_encode64()
+    |>binary_part(0, string_length)
   end
 
   def show(conn, %{"id" => id}) do

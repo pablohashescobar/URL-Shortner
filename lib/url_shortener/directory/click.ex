@@ -8,7 +8,7 @@ defmodule UrlShortener.Directory.Click do
     field :browser_information, :string
     belongs_to :link, Link
 
-    timestamps()
+    timestamps(inserted_at: :created_at)
   end
 
   @doc false

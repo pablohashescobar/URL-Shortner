@@ -14,6 +14,7 @@ defmodule UrlShortenerWeb.Router do
     post "/users/signup/", UserController, :create
     post "/users/signin/", UserController, :signin
     post "/links/", LinkController, :create
+    get "/link/:id", LinkController, :show
   end
 
 
