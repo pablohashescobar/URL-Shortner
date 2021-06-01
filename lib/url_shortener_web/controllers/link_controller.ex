@@ -87,4 +87,15 @@ defmodule UrlShortenerWeb.LinkController do
       send_resp(conn, :no_content, "")
     end
   end
+
+  def redirect_to(conn, %{"hash_id" => hash_id}) do
+    try do
+      with {:ok, %Link{} = link} <- Directory.get_link_from_hash(hash_id) do
+        redirect(conn, external: link.original_link)
+      end
+    rescue
+      Ecto.NoResultsError ->
+        redirect_to(conn, hash_id)
+    end
+  end
 end

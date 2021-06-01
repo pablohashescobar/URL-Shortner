@@ -9,6 +9,11 @@ defmodule UrlShortenerWeb.Router do
     plug UrlShortenerWeb.Auth.Pipeline
   end
 
+
+  scope "/", UrlShortenerWeb do
+    get "/:hash_id/", LinkController, :redirect_to
+  end
+
   scope "/api", UrlShortenerWeb do
     pipe_through :api
     post "/users/signup/", UserController, :create
@@ -20,6 +25,8 @@ defmodule UrlShortenerWeb.Router do
     get "/click/:id/", ClickController, :show
     put "/link/:id/", LinkController, :update
     delete "/link/:id/", LinkController, :delete
+
+
   end
 
   scope "/api", UrlShortenerWeb do

@@ -132,6 +132,16 @@ defmodule UrlShortener.Directory do
     end
   end
 
+
+  def get_link_from_hash(hash_id) do
+    case Repo.get_by(Link, hash_id: hash_id) do
+      nil ->
+        {:error, :not_found}
+      link ->
+        {:ok, link}
+    end
+  end
+
   alias UrlShortener.Directory.Click
 
   @doc """
