@@ -122,6 +122,9 @@ defmodule UrlShortener.Directory do
     Link.changeset(link, attrs)
   end
 
+  # Get Links created by
+  # a user
+
   def get_user_links(user_id) do
     query = from(Link, where: [user_id: ^user_id], select: [:original_link, :short_link, :description, :id])
     case Repo.all(query) do
@@ -132,6 +135,8 @@ defmodule UrlShortener.Directory do
     end
   end
 
+  # Get Link from the hash
+  # for redirection
 
   def get_link_from_hash(hash_id) do
     case Repo.get_by(Link, hash_id: hash_id) do

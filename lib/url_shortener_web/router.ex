@@ -26,7 +26,7 @@ defmodule UrlShortenerWeb.Router do
     put "/link/:id/", LinkController, :update
     delete "/link/:id/", LinkController, :delete
   end
-
+  #Authenticated api
   scope "/api", UrlShortenerWeb do
     pipe_through [:api, :auth]
     get "/users/", UserController, :show_user
