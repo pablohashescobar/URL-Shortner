@@ -5,6 +5,7 @@ defmodule UrlShortenerWeb.UserController do
   alias UrlShortener.Accounts.User
   alias UrlShortenerWeb.Auth.Guardian
 
+
   action_fallback UrlShortenerWeb.FallbackController
 
   # def index(conn, _params) do
@@ -22,6 +23,8 @@ defmodule UrlShortenerWeb.UserController do
   end
 
   def signin(conn, %{"email" => email, "password" => password}) do
+    IO.inspect(email)
+    IO.inspect(password)
     with {:ok, user, token} <- Guardian.authenticate(email, password) do
       conn
       |> put_status(:created)
@@ -29,24 +32,36 @@ defmodule UrlShortenerWeb.UserController do
     end
   end
 
+  def show_user(conn, %{}) do
+    if Guardian.Plug.authenticated?(conn) do
+      user = Guardian.Plug.current_resource(conn)
+      render(conn, "show.json", user: user)
+    end
+  end
+
   # def show(conn, %{"id" => id}) do
-  #   user = Accounts.get_user!(id)
-  #   render(conn, "show.json", user: user)
+  #   IO.inspect(conn)
+  #   # user = Accounts.get_user!(id)
+  #   # render(conn, "show.json", user: user)
   # end
 
-  # def update(conn, %{"id" => id, "user" => user_params}) do
-  #   user = Accounts.get_user!(id)
+  def update(conn, %{"user" => user_params}) do
+    if Guardian.Plug.authenticated?(conn) do
+      user = Guardian.Plug.current_resource(conn)
+      with {:ok, %User{} = user} <- Accounts.update_user(user, user_params) do
+        render(conn, "show.json", user: user)
+      end
+    end
+  end
 
-  #   with {:ok, %User{} = user} <- Accounts.update_user(user, user_params) do
-  #     render(conn, "show.json", user: user)
-  #   end
-  # end
+  def delete(conn, %{}) do
+    if Guardian.Plug.authenticated?(conn) do
+      user = Guardian.Plug.current_resource(conn)
+      IO.inspect(user.id)
+      with {:ok, %User{}} <- Accounts.delete_user(user) do
+        send_resp(conn, :no_content, "")
+      end
+    end
+  end
 
-  # def delete(conn, %{"id" => id}) do
-  #   user = Accounts.get_user!(id)
-
-  #   with {:ok, %User{}} <- Accounts.delete_user(user) do
-  #     send_resp(conn, :no_content, "")
-  #   end
-  # end
 end

@@ -13,15 +13,21 @@ defmodule UrlShortenerWeb.Router do
     pipe_through :api
     post "/users/signup/", UserController, :create
     post "/users/signin/", UserController, :signin
+    # get "/users/", UserController, :show_user
     post "/links/", LinkController, :create
     get "/link/:id/", LinkController, :show
-
     post "/link/:link_id/click", ClickController, :create
     get "/click/:id/", ClickController, :show
     put "/link/:id/", LinkController, :update
     delete "/link/:id/", LinkController, :delete
   end
 
+  scope "/api", UrlShortenerWeb do
+    pipe_through [:api, :auth]
+    get "/users/", UserController, :show_user
+    put "/users/", UserController, :update
+    delete "/users/", UserController, :delete
+  end
 
   # Enables LiveDashboard only for development
   #
