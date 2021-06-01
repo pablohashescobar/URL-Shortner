@@ -3,6 +3,7 @@ defmodule UrlShortenerWeb.LinkController do
 
   alias UrlShortener.Directory
   alias UrlShortener.Directory.Link
+  alias UrlShortenerWeb.Auth.Guardian
 
   action_fallback UrlShortenerWeb.FallbackController
 
@@ -12,7 +13,7 @@ defmodule UrlShortenerWeb.LinkController do
   end
 
   def create(conn, %{"link" => link_params}) do
-    case create_link(link_params) do
+    case create_link(conn, link_params) do
       {:ok, link} ->
         conn
         |> redirect(to: Routes.link_path(conn, :show, link))
@@ -22,22 +23,32 @@ defmodule UrlShortenerWeb.LinkController do
     end
   end
 
-  defp create_link(link_params) do
+  defp create_link(conn, link_params) do
     hash_id = random_string(8)
     short_link = "http://localhost:4000/"<>hash_id
     with_hash = Map.put(link_params, "short_link", short_link)
     params = Map.put(with_hash, "hash_id", hash_id)
     try do
-      case Directory.create_link(params) do
-        {:ok, link} ->
-          {:ok, link}
+      if Guardian.Plug.authenticated?(conn) do
+        user = Guardian.Plug.current_resource(conn)
+        case Directory.create_user_link(user, params) do
+          {:ok, link} ->
+            {:ok, link}
+          {:error, %Ecto.Changeset{} = changeset} ->
+            {:error, changeset}
+        end
+      else
+        case Directory.create_link(params) do
+          {:ok, link} ->
+            {:ok, link}
 
-        {:error, %Ecto.Changeset{} = changeset} ->
-          {:error, changeset}
+          {:error, %Ecto.Changeset{} = changeset} ->
+            {:error, changeset}
+        end
       end
     rescue
       Ecto.ConstraintError ->
-        create_link(params)
+        create_link(conn, params)
     end
 
   end
@@ -51,6 +62,15 @@ defmodule UrlShortenerWeb.LinkController do
   def show(conn, %{"id" => id}) do
     link = Directory.get_link!(id)
     render(conn, "show.json", link: link)
+  end
+
+  def show_user_links(conn, %{}) do
+    if Guardian.Plug.authenticated?(conn) do
+      user = Guardian.Plug.current_resource(conn)
+     with {:ok, links} <- Directory.get_user_links(user.id) do
+      render(conn, "show_user_links.json", links: links)
+     end
+    end
   end
 
   def update(conn, %{"id" => id, "link" => link_params}) do

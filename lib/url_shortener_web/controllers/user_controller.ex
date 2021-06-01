@@ -23,8 +23,6 @@ defmodule UrlShortenerWeb.UserController do
   end
 
   def signin(conn, %{"email" => email, "password" => password}) do
-    IO.inspect(email)
-    IO.inspect(password)
     with {:ok, user, token} <- Guardian.authenticate(email, password) do
       conn
       |> put_status(:created)

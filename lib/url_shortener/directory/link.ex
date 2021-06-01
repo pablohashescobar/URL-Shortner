@@ -21,6 +21,7 @@ defmodule UrlShortener.Directory.Link do
     link
     |> cast(attrs, [:original_link, :description, :short_link, :hash_id])
     |> cast_assoc(:clicks)
+    |> assoc_constraint(:user)
     |> validate_required([:original_link, :description])
   end
 end

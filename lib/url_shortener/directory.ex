@@ -3,9 +3,11 @@ defmodule UrlShortener.Directory do
   The Directory context.
   """
 
-  import Ecto.Query, warn: false
+  import Ecto.Query, warn: false, only: [from: 2]
   alias UrlShortener.Repo
 
+
+  alias UrlShortener.Accounts.User
   alias UrlShortener.Directory.Link
 
   @doc """
@@ -63,6 +65,16 @@ defmodule UrlShortener.Directory do
     end
   end
 
+  def create_user_link(%User{} = user, attrs \\ %{}) do
+    user
+    |> Ecto.build_assoc(:links)
+    |> Link.changeset(attrs)
+    |> Repo.insert()
+    |> case do
+      {:ok, %Link{} =link} -> {:ok, Repo.preload(link, :clicks)}
+      error -> error
+    end
+  end
   @doc """
   Updates a link.
 
@@ -108,6 +120,16 @@ defmodule UrlShortener.Directory do
   """
   def change_link(%Link{} = link, attrs \\ %{}) do
     Link.changeset(link, attrs)
+  end
+
+  def get_user_links(user_id) do
+    query = from(Link, where: [user_id: ^user_id], select: [:original_link, :short_link, :description, :id])
+    case Repo.all(query) do
+      nil ->
+        {:error, :not_found}
+      links ->
+        {:ok, links}
+    end
   end
 
   alias UrlShortener.Directory.Click

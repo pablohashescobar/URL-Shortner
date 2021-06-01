@@ -27,6 +27,8 @@ defmodule UrlShortenerWeb.Router do
     get "/users/", UserController, :show_user
     put "/users/", UserController, :update
     delete "/users/", UserController, :delete
+    post "/users/links/", LinkController, :create
+    get "/users/links/", LinkController, :show_user_links
   end
 
   # Enables LiveDashboard only for development
