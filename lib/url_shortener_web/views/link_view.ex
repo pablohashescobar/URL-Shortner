@@ -33,6 +33,10 @@ defmodule UrlShortenerWeb.LinkView do
     %{data: render_many(links, LinkView, "user_links.json")}
   end
 
+  def render("show_clicks.json", %{clicks: clicks}) do
+    %{data: render_many(clicks, ClickView, "click.json")}
+  end
+
   def render("user_links.json", %{link: link}) do
     %{
       id: link.id,

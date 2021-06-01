@@ -18,15 +18,13 @@ defmodule UrlShortenerWeb.Router do
     pipe_through :api
     post "/users/signup/", UserController, :create
     post "/users/signin/", UserController, :signin
-    # get "/users/", UserController, :show_user
     post "/links/", LinkController, :create
     get "/link/:id/", LinkController, :show
-    post "/link/:link_id/click", ClickController, :create
+    post "/link/:link_id/click/", ClickController, :create
+    get "/link/:link_id/click/", LinkController, :show_clicks_for_link
     get "/click/:id/", ClickController, :show
     put "/link/:id/", LinkController, :update
     delete "/link/:id/", LinkController, :delete
-
-
   end
 
   scope "/api", UrlShortenerWeb do

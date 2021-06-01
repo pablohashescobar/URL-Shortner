@@ -50,7 +50,6 @@ defmodule UrlShortenerWeb.LinkController do
       Ecto.ConstraintError ->
         create_link(conn, params)
     end
-
   end
 
   defp random_string(string_length) do
@@ -62,6 +61,12 @@ defmodule UrlShortenerWeb.LinkController do
   def show(conn, %{"id" => id}) do
     link = Directory.get_link!(id)
     render(conn, "show.json", link: link)
+  end
+
+  def show_clicks_for_link(conn, %{"link_id" => link_id}) do
+    link = Directory.get_link!(link_id)
+    # IO.inspect(link.clicks)
+    render(conn, "show_clicks.json", clicks: link.clicks)
   end
 
   def show_user_links(conn, %{}) do
