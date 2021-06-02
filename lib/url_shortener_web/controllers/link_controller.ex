@@ -65,9 +65,9 @@ defmodule UrlShortenerWeb.LinkController do
   end
 
   def show_clicks_for_link(conn, %{"link_id" => link_id}) do
-    link = Directory.get_link!(link_id)
-    # IO.inspect(link.clicks)
-    render(conn, "show_clicks.json", clicks: link.clicks)
+    clicks = Directory.get_clicks_for_link(link_id)
+    IO.inspect(clicks)
+    render(conn, "show_clicks.json", clicks: clicks)
   end
 
   def show_user_links(conn, %{}) do

@@ -9,7 +9,7 @@ defmodule UrlShortener.Directory do
 
   alias UrlShortener.Accounts.User
   alias UrlShortener.Directory.Link
-
+  alias UrlShortener.Directory.Click
   @doc """
   Returns the list of links.
 
@@ -24,6 +24,7 @@ defmodule UrlShortener.Directory do
     |> Repo.preload(:clicks)
     links
   end
+
 
   @doc """
   Gets a single link.
@@ -45,6 +46,13 @@ defmodule UrlShortener.Directory do
     |> Repo.preload(:clicks)
   end
 
+
+  def get_clicks_for_link(lid) do
+    query = from c in Click,
+              join: l in Link, on: c.link_id == l.id,
+              where: l.id == ^lid
+    Repo.all(query)
+  end
   @doc """
   Creates a link.
 
