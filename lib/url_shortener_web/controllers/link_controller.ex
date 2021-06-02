@@ -12,6 +12,7 @@ defmodule UrlShortenerWeb.LinkController do
     render(conn, "index.json", links: links)
   end
 
+  @spec create(Plug.Conn.t(), map) :: Plug.Conn.t()
   def create(conn, %{"link" => link_params}) do
     case create_link(conn, link_params) do
       {:ok, link} ->

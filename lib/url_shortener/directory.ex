@@ -20,7 +20,9 @@ defmodule UrlShortener.Directory do
 
   """
   def list_links do
-    Repo.all(Link)
+    links = Repo.all(Link)
+    |> Repo.preload(:clicks)
+    links
   end
 
   @doc """
