@@ -1,4 +1,4 @@
-# UrlShortener
+## UrlShortener
 
 To start your Phoenix server:
 
@@ -8,3 +8,4 @@ To start your Phoenix server:
 
 ## Postman Collection
 [API Doc](https://documenter.getpostman.com/view/10490459/TzY1iGmR)
+
