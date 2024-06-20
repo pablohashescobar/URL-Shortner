@@ -1,4 +1,4 @@
-## UrlShortener
+# UrlShortener
 
 To start your Phoenix server:
 
